@@ -1,0 +1,46 @@
+version: '3.9'
+
+services:
+  frontend:
+    build:
+      context: ./Fronted
+      dockerfile: Dockerfile
+    ports:
+      - "7004:80"
+    depends_on:
+      - backend
+
+  hr:
+    build:
+      context: ./Hr
+      dockerfile: Dockerfile
+    ports:
+      - "7005:80"
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile
+    ports:
+      - "3217:3217"
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:13
+    container_name: postgres51
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin234
+      POSTGRES_DB: job_post
+    ports:
+      - "5436:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+volumes:
+  postgres_data:
+
